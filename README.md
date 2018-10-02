@@ -1,5 +1,6 @@
 # Model-of-flow-of-obesity-in-a-network
 
-Christakis and Fowler published a research paper on the effect of social networks on health- related issues. In this project, we will be
-focusing on the 'obesity problem'. They found that obese and non- obese people clustered in the network in a fashion consistent with 
-homophily. This project is a model of the same and it starts with a random network of 100 people.
+Christakis and Fowler published a research paper on the effect of social networks on health- related issues ( the Social Contagion Theory). In this project, we will be focusing on the 'obesity problem'. They found that obese and non- obese people clustered in the network in a fashion consistent with homophily. Homophily means that people who are similar in nature tend to become friends over a period of time. 
+This project is a model of the same and it starts with a random network of 100 people. People are shown by nodes, and their friendships will be shown by edges between the nodes. Then, we assign BMI's randomly to the people. We also add some places in our graph- the foci nodes- namely the gym, movie club, karate club, eatout, and yoga club. Randomly, the nodes are assigned to these foci nodes, where the edges show that the person goes to that particular place. 
+After that, we assign edges to these nodes, based upon their BMI's ( homophily). After that, we assign edges based upon triadic closure. Finally, the effect of social influence is shown (i.e. people going to gym will be decreasing their BMI and those going to eatout will be increasing their BMI). 
+This process is repeated 5 times,and the graph at each step is plotted. At last, a plot of change in obesity and change in density is shown, to visualize how actually the obesity is being diffused into the network (people with BMI equal to 40 have been treated as obese people). 
