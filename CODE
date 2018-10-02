@@ -35,7 +35,7 @@ def get_colours(G):                                # assigning colours to the no
         else:
             c.append('red')                         # red colour for foci nodes.
     return c
-def get_foci_nodes(G):                              # returns the foci nodes
+def get_foci_nodes(G):                              # returns the foci nodes 
     c=[]
     for each in G.nodes():
         if G.node[each]['type']=='foci':
