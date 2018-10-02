@@ -7,11 +7,11 @@ G=nx.Graph()
 def create_graph(G):
     G.add_nodes_from(range(1,101))
     
-def assign_bmi(G):
+def assign_bmi(G):                                     # assign BMI to persons randomly.
     for each in G.nodes():
         G.node[each]['name']=random.randint(15,40)
         G.node[each]['type']='person'
-def add_foci_nodes(G):
+def add_foci_nodes(G):                                # adding the foci nodes- gym, movie club, yoga club etc.   
     n=G.number_of_nodes()
     i=n+1
     foci_nodes=['gym','eatout','movie_club','karate_club','yoga_club']
@@ -21,45 +21,45 @@ def add_foci_nodes(G):
         G.node[i]['type']='foci'
         i=i+1
         
-def get_colours(G):
+def get_colours(G):                                # assigning colours to the nodes.
     c=[]
     for each in G.nodes():
         if G.node[each]['type']=='person':
-            if G.node[each]['name']==15:
+            if G.node[each]['name']==15:            # green colour for nodes with lowest BMI(i.e. 15)
                 c.append('green')
             elif G.node[each]['name']==40:
-                c.append('yellow')
+                c.append('yellow')                  # yellow colour for nodes with highest BMI(i.e.40)
             else:
                 
-                c.append('blue')
+                c.append('blue')                    # blue colour for all the other nodes that are persons
         else:
-            c.append('red')
+            c.append('red')                         # red colour for foci nodes.
     return c
-def get_foci_nodes(G):
+def get_foci_nodes(G):                              # returns the foci nodes
     c=[]
     for each in G.nodes():
         if G.node[each]['type']=='foci':
             c.append(each)
     return c
-def get_person_nodes(G):
+def get_person_nodes(G):                           # returns the persons nodes
     c=[]
     for each in G.nodes():
         if G.node[each]['type']=='person':
             c.append(each)
     return c
-def add_foci_edges(G):
+def add_foci_edges(G):                             # adds the foci edges 
     foci_nodes=get_foci_nodes(G)
     person_nodes=get_person_nodes(G)
     for each in person_nodes:
         r=random.choice(foci_nodes)
         G.add_edge(each,r)
         
-def get_labels(G):
+def get_labels(G):                               # returns a dictionary of the type- (node: type of node)
     dict1={}
     for each in G.nodes():
         dict1[each]=G.node[each]['name']
     return dict1
-def get_size(G):
+def get_size(G):        # returns an array of the size based on the BMI of person nodes, and a fixed size of 1000 for foci nodes
     array1=[]
     for each in G.nodes():
         if G.node[each]['type']=='person':
@@ -67,39 +67,41 @@ def get_size(G):
         else:
             array1.append(1000)    
     return array1
-def visualize(G,t):
+def visualize(G,t):    # plots the graph, and also makes a gml file for the current graph
     
     colors=get_colours(G)
     labeldict=get_labels(G)
     nodesize=get_size(G)
     nx.draw(G,labels=labeldict,node_size=nodesize,node_color=colors)
     plt.show()
-    nx.write_gml(G,'evolution_'+str(t+1)+'.gml')
-def homophily(G):
+    nx.write_gml(G,'evolution_'+str(t+1)+'.gml')            # this is done to save our graph in gml format each time.
+def homophily(G):                                           # function showing the effect of homophily 
     pnodes=get_person_nodes(G)
     for u in pnodes:
         for v in pnodes:
             if u!=v:
                 diff=abs(G.node[u]['name']-G.node[v]['name'])
-                p=float(1)/(diff+1000)
-                r=random.uniform(0,1)
+                p=float(1)/(diff+2000)   # more the difference in BMI's, less similar the people are and lesser are the chances 
+                                         # of them becoming friends  
+                r=random.uniform(0,1)     
                 if(r<p):
                     G.add_edge(u,v)
-def cmn(u,v,G):
+def cmn(u,v,G):                          # returns the number of common friends of the nodes u and v
     nu=set(G.neighbors(u))
     nv=set(G.neighbors(v))
     return len(nu & nv)
-def closure(G):
+def closure(G):                     # function for implementing the closure property
     array1=[]
     for u in G.nodes():
         for v in G.nodes():
             if u!=v and G.node[u]['type']=='person' or G.node[v]['type']=='person':
                 k=cmn(u,v,G)
-                p=1-math.pow((1-0.01),k)
-                tmp=[]
+                p=1-math.pow((1-0.001),k)# 0.01 is the probabilty of u and v becoming friends if the have      
+                tmp=[]                  # a single common friend
                 tmp.append(u)
                 tmp.append(v)
                 tmp.append(p)
+                array1.append(tmp)
     for each in array1:
         u=each[0]
         v=each[1]
@@ -108,17 +110,17 @@ def closure(G):
         if r<p:
             G.add_edge(u,v)
 
-def change_bmi(G):
+def change_bmi(G):                # function for implementing social influence- i.e. the effect of gym and eatout on the people
     fnode=get_foci_nodes(G)
     for each in fnode:
         if G.node[each]['name']=='eatout':
             for each1 in G.neighbors(each):
                 if G.node[each1]['name']!=40:
-                    G.node[each1]['name']+=1
+                    G.node[each1]['name']+=1   # if a person goes to a eatout, his/her BMI would increase
         if G.node[each]['name']=='gym':
             for each1 in G.neighbors(each):
                 if G.node[each1]['name']!=15:
-                    G.node[each1]['name']-=1
+                    G.node[each1]['name']-=1   # if a person goes to a gym, his/her BMI would decrease 
                     
 create_graph(G)
 assign_bmi(G)
@@ -137,3 +139,5 @@ for i in range(0,4):
     change_bmi(G)
     visualize(G,i)
     i+=1
+   
+
